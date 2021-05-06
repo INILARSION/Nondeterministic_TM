@@ -1,0 +1,5 @@
+S: s1,s2,reject,s4
+G:  ,aa,c,012
+D: s1,s1,aa, ,>
+D: s1,reject,c,012,-
+D: s1,s2, , ,-
