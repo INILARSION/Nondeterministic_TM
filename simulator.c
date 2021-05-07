@@ -39,6 +39,7 @@ void apply_delta(struct program *program, struct node *current_node, struct grow
                 memcpy(new_tape, current_node->tape->tape_arr, current_node->tape->length * sizeof(int));
                 new_tape[current_node->head_position] = 0;
                 free(current_node->tape->tape_arr);
+                ++current_node->tape->length;
                 current_node->tape->tape_arr = new_tape;
             }
             break;
@@ -54,6 +55,7 @@ void apply_delta(struct program *program, struct node *current_node, struct grow
                 new_tape[0] = 0;
                 current_node->head_position = 0;
                 free(current_node->tape->tape_arr);
+                ++current_node->tape->length;
                 current_node->tape->tape_arr = new_tape;
             }
             break;

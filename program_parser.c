@@ -221,7 +221,7 @@ void sort_deltas_by_state(struct program *program) {
         program->state_delta_mapping[i].deltas_same_state = malloc(deltas_with_state_count * sizeof(struct deltas*));
         for (int j = 0; j < program->deltas_count; ++j) {
             if (program->deltas[j].state == i)
-                program->state_delta_mapping[i].deltas_same_state[j] = &program->deltas[j];
+                program->state_delta_mapping[i].deltas_same_state[--deltas_with_state_count] = &program->deltas[j];
         }
     }
 }
