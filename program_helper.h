@@ -17,6 +17,16 @@ struct deltas {
 };
 
 /*
+ * Helper struct which contains a list and size of list of deltas-pointers of the same state name.
+ */
+struct sorted_deltas {
+    // list of deltas-pointers with the same state
+    struct deltas **deltas_same_state;
+    // number of deltas of the same state name, size of deltas_same_state
+    int same_state_count;
+};
+
+/*
  * Struct contains all information of the TM-Program
  */
 struct program {
@@ -35,13 +45,8 @@ struct program {
     struct deltas *deltas;
     //Number of all deltas/transitions
     int deltas_count;
-    // list of list of delta pointers
-    // each list of delta pointers contains all deltas of the same state name
-    // these lists are stored in a list by state name. where the index corresponds to the state_names index.
-    // Size is deltas_count
-    struct deltas ***state_delta_mapping;
-    // Array of number of deltas with same state name. Saves size for each state_delta_mapping array entry.
-    // Size is deltas_count.
-    // Index corresponds to state name of state_names.
-    int *deltas_same_state_count;
+    // list of sorted_deltas structs.
+    // Size is deltas_counts
+    // Index of list corresponds to the state name in the state_names list, ie. state number 1 has index 1
+    struct sorted_deltas *state_delta_mapping;
 };

@@ -80,6 +80,7 @@ void parse_alphabet(struct program *program, char *line, size_t line_length) {
     // skip "G: "
     line += 3;
 
+    // get the number of alphabet symbols
     program->alphabet_size = 1;
     for (int i = 0; i < line_length; ++i) {
         if (line[i] == ',')
@@ -88,20 +89,24 @@ void parse_alphabet(struct program *program, char *line, size_t line_length) {
 
     program->alphabet = malloc(program->alphabet_size * sizeof(char*));
 
-    int alphabet_len;
+    // get the length of the individual alphabet symbols and put them then in a list
+    int alphabet_symbol_len;
     int current_element = 0;
     while (line[0] != '\0'){
-        alphabet_len = 0;
-        while (line[alphabet_len] != ',' && line[alphabet_len] != '\n' && line[alphabet_len] != '\0')
-            ++alphabet_len;
+        // get the length of the current alphabet symbol
+        alphabet_symbol_len = 0;
+        while (line[alphabet_symbol_len] != ',' && line[alphabet_symbol_len] != '\n' && line[alphabet_symbol_len] != '\0')
+            ++alphabet_symbol_len;
 
-        char *alphabet_name = calloc(alphabet_len + 1, sizeof(char));
-        strncpy(alphabet_name, line, alphabet_len);
+        // copy the symbol from the whole line in a dedicated var
+        char *alphabet_symbol = calloc(alphabet_symbol_len + 1, sizeof(char));
+        strncpy(alphabet_symbol, line, alphabet_symbol_len);
 
-        program->alphabet[current_element] = alphabet_name;
+        // add symbol to the list
+        program->alphabet[current_element] = alphabet_symbol;
         ++current_element;
 
-        line = line + alphabet_len + 1;
+        line = line + alphabet_symbol_len + 1;
     }
 }
 
@@ -122,8 +127,10 @@ int get_substr_from_line(char *line, char **dest) {
  */
 int search_matching_element(char *line, char **elements, int element_count, int *dest) {
     char *tmp_str;
+    // get first substring from the whole line
     int tmp_str_size = get_substr_from_line(line, &tmp_str);
     int found_match = -1;
+    // compare substring with the list of elements and get the index if found
     for (int j = 0; j < element_count; ++j) {
         if(strcmp(tmp_str, elements[j]) == 0) {
             *dest = j;
@@ -190,8 +197,8 @@ void parse_deltas(struct program *program, FILE *file_ptr, int line_count) {
  * Sorting is useful for the creation of the tree/breadth first search data structure.
  */
 void sort_deltas_by_state(struct program *program) {
-    program->state_delta_mapping = malloc(program->state_count * sizeof(struct deltas*));
-    program->deltas_same_state_count = malloc(program->state_count * sizeof(int));
+    program->state_delta_mapping = malloc(program->state_count * sizeof(struct sorted_deltas));
+
     int deltas_with_state_count;
     for (int i = 0; i < program->state_count; ++i) {
         // count number of deltas with states with i state name index
@@ -201,18 +208,20 @@ void sort_deltas_by_state(struct program *program) {
                 ++deltas_with_state_count;
         }
 
-        program->deltas_same_state_count[i] = deltas_with_state_count;
+        program->state_delta_mapping[i].same_state_count = deltas_with_state_count;
 
+        // There will be states where no delta with this state (ie the accept state)
+        // just continue and set the list to NULL
         if (deltas_with_state_count == 0) {
-            program->state_delta_mapping[i] = NULL;
+            program->state_delta_mapping[i].deltas_same_state = NULL;
             continue;
         }
 
         // put all deltas with state i in an array
-        program->state_delta_mapping[i] = malloc(deltas_with_state_count * sizeof(struct deltas*));
+        program->state_delta_mapping[i].deltas_same_state = malloc(deltas_with_state_count * sizeof(struct deltas*));
         for (int j = 0; j < program->deltas_count; ++j) {
             if (program->deltas[j].state == i)
-                program->state_delta_mapping[i][j] = &program->deltas[j];
+                program->state_delta_mapping[i].deltas_same_state[j] = &program->deltas[j];
         }
     }
 }
