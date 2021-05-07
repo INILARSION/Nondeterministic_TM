@@ -173,12 +173,12 @@ void parse_deltas(struct program *program, FILE *file_ptr, int line_count) {
         tmp_str_size = search_matching_element(line, program->state_names, program->state_count, &delta.state);
         line += tmp_str_size + 1;
 
-        // get subsequent state name
-        tmp_str_size = search_matching_element(line, program->state_names, program->state_count, &delta.subsequent_state);
-        line += tmp_str_size + 1;
-
         // get read symbols
         tmp_str_size = search_matching_element(line, program->alphabet, program->alphabet_size, &delta.read_symbol);
+        line += tmp_str_size + 1;
+
+        // get subsequent state name
+        tmp_str_size = search_matching_element(line, program->state_names, program->state_count, &delta.subsequent_state);
         line += tmp_str_size + 1;
 
         // get write symbols
