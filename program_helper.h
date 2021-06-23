@@ -42,7 +42,7 @@ struct program {
     // Number of different alphabet elements
     int alphabet_size;
     // Array of all deltas/transitions of the Program
-    struct deltas *deltas;
+    struct deltas **deltas;
     //Number of all deltas/transitions
     int deltas_count;
     // list of sorted_deltas structs.

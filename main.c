@@ -7,16 +7,16 @@
 
 int main(int argc, char** argv) {
     if (argc != 3) {
-        printf("Usage: tm_compiler [Tape file] [Program file]");
+        printf("Usage: %s [Tape file] [Program file]", argv[0]);
     }
     char *tape_file_path = argv[1];
     char *program_file_path = argv[2];
 
-    struct program program = parse_program(program_file_path);
+    struct program *program = parse_program(program_file_path);
 
-    struct tape tape = parse_tape(tape_file_path, &program);
+    struct tape *tape = parse_tape(tape_file_path, program);
 
-    simulate(&tape, &program);
+    simulate(tape, program);
 
     return 0;
 }
