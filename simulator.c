@@ -13,7 +13,7 @@ void print_tape(struct tape *tape, struct program *program) {
     for (int i = 0; i < tape->length; ++i) {
         printf("%s", program->alphabet[tape->tape_arr[i]]);
         if (i < tape->length - 1)
-            printf(",");
+            printf("|");
     }
     printf("\n");
 }
