@@ -8,14 +8,47 @@
 /*
  * Helper function to print the content of the tape
  */
-void print_tape(struct tape *tape, struct program *program) {
-    printf("Final tape: ");
+void print_tape(struct program *program, struct tape *tape, char *prefix, int head_position) {
+    int head_offset = strlen(prefix) + 2;
+    //print tape
+    printf("%s: ", prefix);
     for (int i = 0; i < tape->length; ++i) {
+        // calculate string offset of head position
+        if (i < head_position) {
+            head_offset += strlen(program->alphabet[tape->tape_arr[i]]) + 1;
+        }
         printf("%s", program->alphabet[tape->tape_arr[i]]);
+        // print delimiter between tape symbols
         if (i < tape->length - 1)
             printf("|");
     }
     printf("\n");
+
+    //print head position
+    for (int i = 0; i < head_offset; ++i) {
+        printf(" ");
+    }
+    printf("^\n\n");
+}
+
+/*
+ * This function prints all tape configurations from the root node to the accepted node
+ */
+void print_all_configurations(struct node *current_node, struct program *program) {
+    // accepted node is last node so has no child
+    current_node->child = NULL;
+    // go to the root node and set the child node
+    struct node *tmp_node;
+    while (current_node->father != NULL) {
+        tmp_node = current_node->father;
+        tmp_node->child = current_node;
+        current_node = tmp_node;
+    }
+    // go from the root node (now current_node) and go to the accepted node and print the tapes on the way
+    while (current_node->child != NULL) {
+        print_tape(program, current_node->tape, "Tape", current_node->head_position);
+        current_node = current_node->child;
+    }
 }
 
 /*
@@ -65,8 +98,9 @@ void apply_delta(struct program *program, struct node *current_node, struct grow
     if (current_node->delta->subsequent_state == program->accept_state) {
         queue->head = 0;
         queue->tail = 0;
-        printf("Accepted state!\n");
-        print_tape(current_node->tape, program);
+        if (program->is_verbose)
+            print_all_configurations(current_node, program);
+        print_tape(program, current_node->tape, "Final tape", current_node->head_position);
         return;
     } else if (current_node->delta->subsequent_state == program->reject_state) {
         return;
@@ -84,6 +118,7 @@ void apply_delta(struct program *program, struct node *current_node, struct grow
             new_node->tape->tape_arr = malloc(current_node->tape->length * sizeof(int));
             memcpy(new_node->tape->tape_arr, current_node->tape->tape_arr, current_node->tape->length * sizeof(int));
             new_node->head_position = current_node->head_position;
+            new_node->father = current_node;
             push_queue(queue, new_node);
         }
     }
@@ -98,13 +133,17 @@ void run_partial_simulation(struct program *program, struct growable_queue *queu
 
     apply_delta(program, current_node, queue);
 
-    free(current_node->tape->tape_arr);
-    free(current_node->tape);
-    free(current_node);
+    // If the program is not verbose free the memory
+    // If it is verbose, the memory is needed for the backtracking
+    if (!program->is_verbose) {
+        free(current_node->tape->tape_arr);
+        free(current_node->tape);
+        free(current_node);
+    }
 }
 
 /*
- *
+ * This function starts the simulation of the Non-deterministic Turing machine.
  */
 void simulate(struct tape *tape, struct program *program) {
     // Create and initialize a FIFO queue, which contains the nodes (configuration of delta, tape and head position) of the computation tree
@@ -125,6 +164,8 @@ void simulate(struct tape *tape, struct program *program) {
             start_node->tape->tape_arr = calloc(tape->length, sizeof(int));
             memcpy(start_node->tape->tape_arr, tape->tape_arr, tape->length * sizeof(int));
             start_node->head_position = 0;
+            // root nodes have no father
+            start_node->father = NULL;
             push_queue(&queue, start_node);
         }
     }

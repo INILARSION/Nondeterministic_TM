@@ -1,13 +1,17 @@
 #pragma once
 #include "program_helper.h"
 #include "tape_helper.h"
+
 /*
- * Struct
+ * Struct to save a Turing machine configuration
  */
 struct node{
     struct deltas *delta;
     struct tape *tape;
     int head_position;
+    // save father node to find all nodes from the accepting node to the root node
+    struct node *father;
+    struct node *child;
 };
 
 struct growable_queue {

@@ -49,4 +49,7 @@ struct program {
     // Size is deltas_counts
     // Index of list corresponds to the state name in the state_names list, ie. state number 1 has index 1
     struct sorted_deltas *state_delta_mapping;
+    // This flag saves if this simulation should run Verbose.
+    // 0 = False, 1 = True
+    int is_verbose;
 };
