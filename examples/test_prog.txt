@@ -1,5 +1,0 @@
-S: s1,s2,reject,s4
-G:  ,aa,c,012
-D: s1,aa,s1, ,>
-D: s1,c,reject,012,-
-D: s1, ,s2, ,-
