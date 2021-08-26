@@ -1,5 +1,6 @@
 #include <malloc.h>
 #include <string.h>
+#include <stdlib.h>
 #include "simulator.h"
 #include "tape_helper.h"
 #include "program_helper.h"
@@ -101,7 +102,7 @@ void apply_delta(struct program *program, struct node *current_node, struct grow
         if (program->is_verbose)
             print_all_configurations(current_node, program);
         print_tape(program, current_node->tape, "Final tape", current_node->head_position);
-        return;
+        exit(0);
     } else if (current_node->delta->subsequent_state == program->reject_state) {
         return;
     }
@@ -149,7 +150,7 @@ void simulate(struct tape *tape, struct program *program) {
     // Create and initialize a FIFO queue, which contains the nodes (configuration of delta, tape and head position) of the computation tree
     // FIFO is needed because the "tree" which emerges from the nondeterminism has to be traversed as BFS
     struct growable_queue queue;
-    init_queue(&queue, 50);
+    init_queue(&queue, 10000);
 
     // Get all deltas from the first state
     struct sorted_deltas *deltas_start_state = &program->state_delta_mapping[program->start_state];
@@ -175,4 +176,6 @@ void simulate(struct tape *tape, struct program *program) {
     // Queue will be set to empty if an accepted state is found
     while (!is_queue_empty(&queue))
         run_partial_simulation(program, &queue);
+
+    printf("No accepting state found!\n");
 }

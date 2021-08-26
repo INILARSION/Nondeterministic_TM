@@ -105,7 +105,7 @@ int search_matching_element(char **line, char **elements, int element_count) {
         }
     }
     if (found_match == -1) {
-        printf("Program delta contains state which is not contained in the defined states!");
+        printf("Program delta contains state which is not contained in the defined states!\n");
         exit(-1);
     }
     return matched_index;

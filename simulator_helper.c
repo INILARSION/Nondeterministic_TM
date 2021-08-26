@@ -20,16 +20,19 @@ void *pop_queue(struct growable_queue *queue) {
 }
 
 int push_queue(struct growable_queue *queue, void *element) {
-    if ((queue->head - queue->tail) == queue->size) {
-        queue->head = queue->head % queue->size;
-        queue->tail = queue->tail % queue->size;
-        if (queue->head < queue->tail)
-            queue->head += queue->size;
+    if (((queue->head + queue->size) - queue->tail) % queue->size == queue->size - 1) {
+        void **new_data = malloc(2 * queue->size * sizeof(struct deltas*));
+        for (int i = 0; i < queue->size - 1; ++i) {
+            new_data[i] = queue->data[(queue->tail + i) % queue->size];
+        }
+        queue->tail = 0;
+        queue->head = queue->size - 1;
         queue->size *= 2;
-        queue->data = realloc(queue->data, queue->size * sizeof(struct deltas*));
+        free(queue->data);
+        queue->data = new_data;
     }
     queue->data[queue->head] = element;
-    queue->head = (queue->head + 1) % queue->size;
+    queue->head = ++queue->head % queue->size;
     return 0;
 }
 
