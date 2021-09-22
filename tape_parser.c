@@ -55,20 +55,13 @@ int search_matching_alphabet_element(struct program *program, char *line, int *a
 /*
  * This function parses a file containing one tape.
  */
-struct tape *parse_tape(char *filepath, struct program *program){
-    FILE *file_ptr = fopen(filepath, "r");
+struct tape *parse_tape(struct program *program){
     char *line = NULL;
+    ssize_t line_length = 0;
     size_t buffer_size = 0;
-    ssize_t line_length;
-
-    if(file_ptr == NULL) {
-        printf("File %s not found!", filepath);
-        exit(1);
-    }
+    line_length = getline(&line, &buffer_size, stdin);
 
     struct tape *tape = malloc(sizeof(struct tape));
-
-    line_length = getline(&line, &buffer_size, file_ptr);
 
     if (line_length == -1)
         exit(-1);
@@ -88,8 +81,6 @@ struct tape *parse_tape(char *filepath, struct program *program){
         alphabet_element_length = search_matching_alphabet_element(program, line, &tape->tape_arr[i]);
         line += alphabet_element_length + 1;
     }
-
-    fclose(file_ptr);
 
     return tape;
 }
