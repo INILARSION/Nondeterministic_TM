@@ -47,6 +47,14 @@ void print_all_configurations(struct node *current_node, struct program *program
     }
     // go from the root node (now current_node) and go to the accepted node and print the tapes on the way
     while (current_node->child != NULL) {
+        printf(
+                "Delta: %s,%s,%s,%s,%c\n",
+                program->state_names[current_node->delta->state],
+                program->alphabet[current_node->delta->read_symbol],
+                program->state_names[current_node->delta->subsequent_state],
+                program->alphabet[current_node->delta->write_symbol],
+                current_node->delta->movement
+                );
         print_tape(program, current_node->tape, "Tape", current_node->head_position);
         current_node = current_node->child;
     }
