@@ -59,6 +59,7 @@ struct tape *parse_tape(struct program *program){
     char *line = NULL;
     ssize_t line_length = 0;
     size_t buffer_size = 0;
+    printf("Please input the tape:\n");
     line_length = getline(&line, &buffer_size, stdin);
 
     struct tape *tape = malloc(sizeof(struct tape));
