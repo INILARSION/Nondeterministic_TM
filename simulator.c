@@ -110,6 +110,7 @@ void apply_delta(struct program *program, struct node *current_node, struct grow
         if (program->is_verbose)
             print_all_configurations(current_node, program);
         print_tape(program, current_node->tape, "Final tape", current_node->head_position);
+        printf("Turing machine halted in an accepting state\n");
         exit(0);
     } else if (current_node->delta->subsequent_state == program->reject_state) {
         return;
@@ -185,5 +186,5 @@ void simulate(struct tape *tape, struct program *program) {
     while (!is_queue_empty(&queue))
         run_partial_simulation(program, &queue);
 
-    printf("No accepting state found!\n");
+    printf("Turing machine halted in a not accepting state!\n");
 }

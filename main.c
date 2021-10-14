@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
 
     if (argc == 2) {
         is_verbose = 0;
-        program_file_path = argv[2];
+        program_file_path = argv[1];
     } else if (argc == 3) {
         if (strcmp(argv[1], "-v") != 0) {
             printf("Usage: %s [optional flag: -v] [Program file]", argv[0]);
