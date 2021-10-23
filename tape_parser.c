@@ -20,7 +20,7 @@ int get_tape_length(const char *line, size_t line_length) {
 /*
  * Get substring from the line, delimiter is '|'. Destination char* can be uninitialized.
  */
-int get_state_substr_from_line(char *line, char **dest) {
+int get_substr_from_line(char *line, char **dest) {
     int tmp_str_size = 0;
     while (line[tmp_str_size] != '|' && line[tmp_str_size] != '\n' && line[tmp_str_size] != '\0')
         ++tmp_str_size;
@@ -31,11 +31,11 @@ int get_state_substr_from_line(char *line, char **dest) {
 }
 
 /*
- * Get index of matching state name of first substring in the line.
+ * Get index of matching alphabet of first substring in the line.
  */
 int search_matching_alphabet_element(struct program *program, char *line, int *alphabet_element) {
     char *tmp_str;
-    int tmp_str_size = get_state_substr_from_line(line, &tmp_str);
+    int tmp_str_size = get_substr_from_line(line, &tmp_str);
     int found_match = -1;
 
     for (int j = 0; j < program->alphabet_size; ++j) {
@@ -46,7 +46,8 @@ int search_matching_alphabet_element(struct program *program, char *line, int *a
         }
     }
     if (found_match == -1) {
-        printf("Tape contains element which is not contained in the alphabet!");
+        printf("Tape contains element which is not contained in the alphabet!\n");
+        printf("The element is: %s\n", tmp_str);
         exit(-1);
     }
     return tmp_str_size;

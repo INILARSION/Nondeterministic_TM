@@ -106,6 +106,7 @@ int search_matching_element(char **line, char **elements, int element_count) {
     }
     if (found_match == -1) {
         printf("Program delta contains state which is not contained in the defined states!\n");
+        printf("The element is: %s\n", tmp_str);
         exit(-1);
     }
     return matched_index;
@@ -128,7 +129,7 @@ void parse_deltas(struct program *program, FILE *file_ptr, int line_count) {
 
         // check formatting and size
         if (line_length < 12 || tmp_line[0] != 'D'){
-            printf("Delta has wrong formatting!");
+            printf("Delta number %d has wrong formatting!", i + 1);
             exit(-1);
         }
 
